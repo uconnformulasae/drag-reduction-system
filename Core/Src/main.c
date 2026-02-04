@@ -121,20 +121,7 @@ int main(void)
   /* USER CODE END 3 */
 }
 
-int toggle(int to_toggle)
-{
-	return (to_toggle + 1) % 2;
-}
 
-void enableCANRx()
-{
-
-}
-
-void disableCANRx()
-{
-
-}
 
 /**
   * @brief System Clock Configuration
@@ -249,7 +236,24 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void CANFilterConfig()
+{
 
+}
+int toggle(int to_toggle)
+{
+	return (to_toggle + 1) % 2;
+}
+
+void enableCANRx()
+{
+
+}
+
+void disableCANRx()
+{
+
+}
 /* USER CODE END 4 */
 
 /**
