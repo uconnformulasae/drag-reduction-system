@@ -9,16 +9,16 @@
 //#define MAX_ABS_LONG_G 0
 
 // Returns absolute value of float argument f
-float absFloat(float* p) {
-	return (*p) >= 0 ? (*p) : -1 * (*p);
+float absFloat(float f) {
+	return f >= 0 ? f : -1 * f;
 }
 
 // Returns whether DRS should be enabled given the input info
-bool shouldActivateDRS(float* steeringAnglePtr, float* latGPtr, float* brakeInputPercentagePtr, float* cooldownPtr) {
+bool shouldActivateDRS(float steeringAngle, float latG, float brakeInputPercentage, float* cooldown) {
 	return (
-			absFloat(latGPtr) < MAX_ABS_LAT_G &&
-			absFloat(steeringAnglePtr) < MAX_ABS_STEERING_ANGLE &&
-			(*brakeInputPercentagePtr) < MAX_BRAKE_INPUT_PERCENTAGE &&
-			(*cooldownPtr) >= MIN_COOLDOWN_SECONDS
+			absFloat(latG) < MAX_ABS_LAT_G &&
+			absFloat(steeringAngle) < MAX_ABS_STEERING_ANGLE &&
+			brakeInputPercentage < MAX_BRAKE_INPUT_PERCENTAGE &&
+			(*cooldown) >= MIN_COOLDOWN_SECONDS
 	);
 }
