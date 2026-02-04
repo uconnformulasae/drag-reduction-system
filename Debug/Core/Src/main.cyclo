@@ -1,0 +1,8 @@
+../Core/Src/main.c:70:5:main	4
+../Core/Src/main.c:124:5:toggle	1
+../Core/Src/main.c:129:6:enableCANRx	1
+../Core/Src/main.c:134:6:disableCANRx	1
+../Core/Src/main.c:143:6:SystemClock_Config	3
+../Core/Src/main.c:180:13:MX_CAN_Init	2
+../Core/Src/main.c:217:13:MX_GPIO_Init	1
+../Core/Src/main.c:259:6:Error_Handler	1
