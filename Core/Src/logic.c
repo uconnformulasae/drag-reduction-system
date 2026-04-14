@@ -1,7 +1,7 @@
 // logic.c
 // B. Deutsch (2/3/26)
 
-#include "main.h"
+#include <stdbool.h>
 
 /*
  * CRITICAL PARAMETERS
