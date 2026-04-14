@@ -1,8 +1,6 @@
-../Core/Src/main.c:70:5:main	8	static
-../Core/Src/main.c:124:5:toggle	16	static
-../Core/Src/main.c:129:6:enableCANRx	4	static
-../Core/Src/main.c:134:6:disableCANRx	4	static
-../Core/Src/main.c:143:6:SystemClock_Config	72	static
-../Core/Src/main.c:180:13:MX_CAN_Init	8	static
-../Core/Src/main.c:217:13:MX_GPIO_Init	32	static
-../Core/Src/main.c:259:6:Error_Handler	4	static,ignoring_inline_asm
+../Core/Src/main.c:74:5:main	8	static
+../Core/Src/main.c:134:6:SystemClock_Config	72	static
+../Core/Src/main.c:171:13:MX_CAN_Init	8	static
+../Core/Src/main.c:208:13:MX_USART1_UART_Init	8	static
+../Core/Src/main.c:241:13:MX_GPIO_Init	32	static
+../Core/Src/main.c:271:6:Error_Handler	4	static,ignoring_inline_asm
