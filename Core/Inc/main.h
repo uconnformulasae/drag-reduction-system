@@ -51,7 +51,7 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
-int toggle(int to_toggle);
+
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */
@@ -60,13 +60,13 @@ int toggle(int to_toggle);
 
 /* USER CODE BEGIN Private defines */
 typedef enum {
-	MANUAL,
-	AUTO
+	MANUAL=0,
+	AUTO=1
 }MODE;
 
 typedef enum{
-	ON,
-	OFF
+	OFF=0,
+	ON=1
 }DRS_STATUS;
 /* USER CODE END Private defines */
 
