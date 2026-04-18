@@ -60,13 +60,13 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 typedef enum {
-	MANUAL,
-	AUTO
+	MANUAL=0,
+	AUTO=1
 }MODE;
 
 typedef enum{
-	ON,
-	OFF
+	OFF=0,
+	ON=1
 }DRS_STATUS;
 /* USER CODE END Private defines */
 
