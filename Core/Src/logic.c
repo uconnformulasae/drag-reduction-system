@@ -1,6 +1,7 @@
 // logic.c
 // B. Deutsch (2/3/26)
 
+#include "main.h"
 #include <stdbool.h>
 
 /*
@@ -24,12 +25,16 @@ float absFloat(float f) {
 /*
  * MAIN LOGIC
  */
-// Returns whether DRS should be enabled given the input info
-bool shouldActivateDRS(float steeringAngle, float latG, float brakeInputPercentage, float* cooldown) {
-	return (
+// Returns whether DRS should be enabled given the input info as DRS_STATUS var-type
+DRS_STATUS shouldActivateDRS(float steeringAngle, float latG, float brakeInputPercentage, float cooldown) {
+	if (
 			absFloat(latG) < MAX_ABS_LAT_G &&
 			absFloat(steeringAngle) < MAX_ABS_STEERING_ANGLE &&
 			brakeInputPercentage < MAX_BRAKE_INPUT_PERCENTAGE &&
-			(*cooldown) >= MIN_COOLDOWN_SECONDS
-	);
+			cooldown >= MIN_COOLDOWN_SECONDS
+	){
+		return ON;
+	} else {
+		return OFF;
+	}
 }
