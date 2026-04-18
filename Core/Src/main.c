@@ -21,7 +21,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdbool.h>
+#include "logic.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,8 +49,8 @@ UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
 
-//MODE mode = AUTO;
-//DRS_STATUS drs_stat = OFF;
+MODE mode = MANUAL;
+DRS_STATUS drs_stat = OFF;
 
 /* USER CODE END PV */
 
@@ -64,7 +65,13 @@ static void MX_USART1_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+MODE toggle(MODE m) {
+	switch (m) {
+		case AUTO:    return MANUAL;
+		case MANUAL:  return AUTO;
+		default:      return MANUAL;   // if we got here somehow, something's fucked
+	}
+}
 /* USER CODE END 0 */
 
 /**
@@ -106,20 +113,30 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-//	  if(!HAL_GPIO_ReadPin(BTN_REG, MANUAL_BTN))
-//	  		  mode = toggle((int)mode);
-//
-//	  	  if(mode == MANUAL)
-//	  	  {
-//	  		  // check if drs is toggled
-//	  		  if(!HAL_GPIO_ReadPin(BTN_REG, ON_BTN)){
-//	  			  drs_stat = toggle((int)drs_stat);
-//	  		  }
-//	  	  }
-//	  	  else
-//	  	  {
-//
-//	  	  }
+
+	  // initialize all the variables we need to track for AUTO DRS
+	  float steeringAngle = 0.0;
+	  float latG = 0.0;
+	  float brakeInputPercentage = 0.0;
+	  float cooldown = 0.0;
+
+	  // check if the mode-switch button was pressed
+	  if (!HAL_GPIO_ReadPin(BTN_REG, MANUAL_BTN)) {
+		  mode = toggle(mode);  // swap DRS modes
+	  }
+
+	  // handle drs depending on the mode
+	  if (mode == MANUAL){  // in manual mode...
+		  // check if drs is toggled
+		  if (!HAL_GPIO_ReadPin(BTN_REG, ON_BTN) ){
+			  drs_stat = toggle((int)drs_stat);
+		  }
+	  }
+	  else if (mode == AUTO) {  // in automatic mode...
+		  drs_stat = shouldActivateDRS(steeringAngle, latG, brakeInputPercentage, cooldown);
+	  }
+	  else {;}  /* should not be reached */
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
