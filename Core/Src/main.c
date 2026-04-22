@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdbool.h>
+#include <math.h>
 #include "logic.h"
 /* USER CODE END Includes */
 
@@ -35,6 +36,10 @@
 #define BTN_REG GPIOB
 #define MANUAL_BTN GPIO_PIN_0
 #define ON_BTN GPIO_PIN_1
+
+// TODO: maybe do a nicer macro later if needed? prolly won't need it tho
+#define CCRMIN 2000
+#define CCRMAX 10000
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -45,7 +50,7 @@
 /* Private variables ---------------------------------------------------------*/
 CAN_HandleTypeDef hcan;
 
-UART_HandleTypeDef huart1;
+TIM_HandleTypeDef htim2;
 
 /* USER CODE BEGIN PV */
 
@@ -58,7 +63,7 @@ DRS_STATUS drs_stat = OFF;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_CAN_Init(void);
-static void MX_USART1_UART_Init(void);
+static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -72,6 +77,24 @@ MODE toggle(MODE m) {
 		default:      return MANUAL;   // if we got here somehow, something's fucked
 	}
 }
+
+int degreeToCCR(int d) {
+	int ARRchunksize = CCRMAX / CCRMIN;  // int div. on purpose
+	float frac = d / 360.0;
+	return (int)(2000 + (8000 * (frac)));
+}
+
+void setServoAngle(int d) {
+	TIM2->CCR1 = degreeToCCR(d);
+}
+
+void servoRotation() {
+	for (int i = 0; i < 360; i+=1) {
+		setServoAngle(i);
+		HAL_Delay(100);
+	}
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -104,38 +127,50 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_CAN_Init();
-  MX_USART1_UART_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 //  HAL_TIM_Base_Start(&htim2);  // for DRS timer logic
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
-	  // initialize all the variables we need to track for AUTO DRS
-	  float steeringAngle = 0.0;
-	  float latG = 0.0;
-	  float brakeInputPercentage = 0.0;
-	  float cooldown = 0.0;
-
-	  // check if the mode-switch button was pressed
-	  if (!HAL_GPIO_ReadPin(BTN_REG, MANUAL_BTN)) {
-		  mode = toggle(mode);  // swap DRS modes
-	  }
-
-	  // handle drs depending on the mode
-	  if (mode == MANUAL){  // in manual mode...
-		  // check if drs is toggled
-		  if (!HAL_GPIO_ReadPin(BTN_REG, ON_BTN) ){
-			  drs_stat = toggle((int)drs_stat);
-		  }
-	  }
-	  else if (mode == AUTO) {  // in automatic mode...
-		  drs_stat = shouldActivateDRS(steeringAngle, latG, brakeInputPercentage, cooldown);
-	  }
-	  else {;}  /* should not be reached */
+//	  TIM2->CCR1 = 2000;
+//	  HAL_Delay(1000);
+//	  TIM2->CCR1 = 4000;
+//	  HAL_Delay(1000);
+//	  TIM2->CCR1 = 6000;
+//	  HAL_Delay(1000);
+//	  TIM2->CCR1 = 8000;
+//	  HAL_Delay(1000);
+//	  TIM2->CCR1 = 10000;
+//	  HAL_Delay(1000);
+	  servoRotation();
+//
+//	  // initialize all the variables we need to track for AUTO DRS
+//	  float steeringAngle = 0.0;
+//	  float latG = 0.0;
+//	  float brakeInputPercentage = 0.0;
+//	  float cooldown = 0.0;
+//
+//	  // check if the mode-switch button was pressed
+//	  if (!HAL_GPIO_ReadPin(BTN_REG, MANUAL_BTN)) {
+//		  mode = toggle(mode);  // swap DRS modes
+//	  }
+//
+//	  // handle drs depending on the mode
+//	  if (mode == MANUAL){  // in manual mode...
+//		  // check if drs is toggled
+//		  if (!HAL_GPIO_ReadPin(BTN_REG, ON_BTN) ){
+//			  drs_stat = toggle((int)drs_stat);
+//		  }
+//	  }
+//	  else if (mode == AUTO) {  // in automatic mode...
+//		  drs_stat = shouldActivateDRS(steeringAngle, latG, brakeInputPercentage, cooldown);
+//	  }
+//	  else {;}  /* should not be reached */
 
     /* USER CODE END WHILE */
 
@@ -156,10 +191,13 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL4;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -169,12 +207,12 @@ void SystemClock_Config(void)
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
     Error_Handler();
   }
@@ -218,35 +256,61 @@ static void MX_CAN_Init(void)
 }
 
 /**
-  * @brief USART1 Initialization Function
+  * @brief TIM2 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_USART1_UART_Init(void)
+static void MX_TIM2_Init(void)
 {
 
-  /* USER CODE BEGIN USART1_Init 0 */
+  /* USER CODE BEGIN TIM2_Init 0 */
 
-  /* USER CODE END USART1_Init 0 */
+  /* USER CODE END TIM2_Init 0 */
 
-  /* USER CODE BEGIN USART1_Init 1 */
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_OC_InitTypeDef sConfigOC = {0};
 
-  /* USER CODE END USART1_Init 1 */
-  huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
-  huart1.Init.WordLength = UART_WORDLENGTH_8B;
-  huart1.Init.StopBits = UART_STOPBITS_1;
-  huart1.Init.Parity = UART_PARITY_NONE;
-  huart1.Init.Mode = UART_MODE_TX_RX;
-  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart1) != HAL_OK)
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 15;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 65535;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN USART1_Init 2 */
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_PWM_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
 
-  /* USER CODE END USART1_Init 2 */
+  /* USER CODE END TIM2_Init 2 */
+  HAL_TIM_MspPostInit(&htim2);
 
 }
 
@@ -263,14 +327,27 @@ static void MX_GPIO_Init(void)
   /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pins : PB0 PB1 */
   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PA9 */
+  GPIO_InitStruct.Pin = GPIO_PIN_9;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PA10 */
+  GPIO_InitStruct.Pin = GPIO_PIN_10;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
