@@ -138,7 +138,7 @@ int main(void)
   while (1)
   {
 	  // TODO: Servo stub; scrap later
-	  servoRotation();
+	  setServoAngle(0);
 
 	  // initialize all the variables we need to track for AUTO DRS
 	  float steeringAngle = 0.0;
