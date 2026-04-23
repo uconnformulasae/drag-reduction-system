@@ -137,17 +137,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-//	  TIM2->CCR1 = 2000;
-//	  HAL_Delay(1000);
-//	  TIM2->CCR1 = 4000;
-//	  HAL_Delay(1000);
-//	  TIM2->CCR1 = 6000;
-//	  HAL_Delay(1000);
-//	  TIM2->CCR1 = 8000;
-//	  HAL_Delay(1000);
-//	  TIM2->CCR1 = 10000;
-//	  HAL_Delay(1000);
-	  servoRotation();
+
+	  setServoAngle(0);
 //
 //	  // initialize all the variables we need to track for AUTO DRS
 //	  float steeringAngle = 0.0;
