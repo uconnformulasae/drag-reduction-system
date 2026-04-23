@@ -79,9 +79,10 @@ MODE toggle(MODE m) {
 }
 
 int degreeToCCR(int d) {
-	int ARRchunksize = CCRMAX / CCRMIN;  // int div. on purpose
-	float frac = d / 360.0;
-	return (int)(2000 + (8000 * (frac)));
+	int CCR_range = CCRMAX - CCRMIN;
+	d = d % 360;  // normalize degree
+	int frac = (int)(d / 360.0);  // find ratio of our expected degree to 360
+	return CCRMIN + (CCR_range * (frac));
 }
 
 void setServoAngle(int d) {
