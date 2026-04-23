@@ -137,40 +137,31 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-//	  TIM2->CCR1 = 2000;
-//	  HAL_Delay(1000);
-//	  TIM2->CCR1 = 4000;
-//	  HAL_Delay(1000);
-//	  TIM2->CCR1 = 6000;
-//	  HAL_Delay(1000);
-//	  TIM2->CCR1 = 8000;
-//	  HAL_Delay(1000);
-//	  TIM2->CCR1 = 10000;
-//	  HAL_Delay(1000);
+	  // TODO: Servo stub; scrap later
 	  servoRotation();
-//
-//	  // initialize all the variables we need to track for AUTO DRS
-//	  float steeringAngle = 0.0;
-//	  float latG = 0.0;
-//	  float brakeInputPercentage = 0.0;
-//	  float cooldown = 0.0;
-//
-//	  // check if the mode-switch button was pressed
-//	  if (!HAL_GPIO_ReadPin(BTN_REG, MANUAL_BTN)) {
-//		  mode = toggle(mode);  // swap DRS modes
-//	  }
-//
-//	  // handle drs depending on the mode
-//	  if (mode == MANUAL){  // in manual mode...
-//		  // check if drs is toggled
-//		  if (!HAL_GPIO_ReadPin(BTN_REG, ON_BTN) ){
-//			  drs_stat = toggle((int)drs_stat);
-//		  }
-//	  }
-//	  else if (mode == AUTO) {  // in automatic mode...
-//		  drs_stat = shouldActivateDRS(steeringAngle, latG, brakeInputPercentage, cooldown);
-//	  }
-//	  else {;}  /* should not be reached */
+
+	  // initialize all the variables we need to track for AUTO DRS
+	  float steeringAngle = 0.0;
+	  float latG = 0.0;
+	  float brakeInputPercentage = 0.0;
+	  float cooldown = 0.0;
+
+	  // check if the mode-switch button was pressed
+	  if (!HAL_GPIO_ReadPin(BTN_REG, MANUAL_BTN)) {
+		  mode = toggle(mode);  // swap DRS modes
+	  }
+
+	  // handle drs depending on the mode
+	  if (mode == MANUAL){  // in manual mode...
+		  // check if drs is toggled
+		  if (!HAL_GPIO_ReadPin(BTN_REG, ON_BTN) ){
+			  drs_stat = toggle((int)drs_stat);
+		  }
+	  }
+	  else if (mode == AUTO) {  // in automatic mode...
+		  drs_stat = shouldActivateDRS(steeringAngle, latG, brakeInputPercentage, cooldown);
+	  }
+	  else {;}  /* should not be reached */
 
     /* USER CODE END WHILE */
 
