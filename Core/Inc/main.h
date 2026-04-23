@@ -51,7 +51,7 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
-int toggle(int to_toggle);
+
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */
