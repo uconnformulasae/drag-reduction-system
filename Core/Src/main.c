@@ -140,7 +140,7 @@ int main(void)
   canfilterconfig.FilterMaskIdLow = 0x0000;
   canfilterconfig.FilterMode = CAN_FILTERMODE_IDMASK;
   canfilterconfig.FilterScale = CAN_FILTERSCALE_32BIT;
-
+  HAL_CAN_ConfigFilter(&hcan, &canfilterconfig);
   if(HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK) Error_Handler(); // enable CAN interrupts
 //  HAL_TIM_Base_Start(&htim2);  // for DRS timer logic
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
