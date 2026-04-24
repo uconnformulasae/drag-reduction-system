@@ -147,7 +147,16 @@ int main(void)
 //	  HAL_Delay(1000);
 //	  TIM2->CCR1 = 10000;
 //	  HAL_Delay(1000);
-	  servoRotation();
+
+
+//	  servoRotation();
+
+	  if (!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8)) {
+		  setServoAngle(0);
+	  } else {
+		  setServoAngle(90);
+	  }
+
 //
 //	  // initialize all the variables we need to track for AUTO DRS
 //	  float steeringAngle = 0.0;
@@ -336,6 +345,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PA8 */
+  GPIO_InitStruct.Pin = GPIO_PIN_8;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PA9 */
   GPIO_InitStruct.Pin = GPIO_PIN_9;

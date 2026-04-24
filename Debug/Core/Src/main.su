@@ -3,8 +3,8 @@
 ../Core/Src/main.c:87:6:setServoAngle	16	static
 ../Core/Src/main.c:91:6:servoRotation	16	static
 ../Core/Src/main.c:104:5:main	8	static
-../Core/Src/main.c:186:6:SystemClock_Config	72	static
-../Core/Src/main.c:226:13:MX_CAN_Init	8	static
-../Core/Src/main.c:263:13:MX_TIM2_Init	64	static
-../Core/Src/main.c:322:13:MX_GPIO_Init	40	static
-../Core/Src/main.c:365:6:Error_Handler	4	static,ignoring_inline_asm
+../Core/Src/main.c:195:6:SystemClock_Config	72	static
+../Core/Src/main.c:235:13:MX_CAN_Init	8	static
+../Core/Src/main.c:272:13:MX_TIM2_Init	64	static
+../Core/Src/main.c:331:13:MX_GPIO_Init	40	static
+../Core/Src/main.c:380:6:Error_Handler	4	static,ignoring_inline_asm

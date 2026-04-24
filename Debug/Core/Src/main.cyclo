@@ -2,9 +2,9 @@
 ../Core/Src/main.c:81:5:degreeToCCR	1
 ../Core/Src/main.c:87:6:setServoAngle	1
 ../Core/Src/main.c:91:6:servoRotation	2
-../Core/Src/main.c:104:5:main	1
-../Core/Src/main.c:186:6:SystemClock_Config	3
-../Core/Src/main.c:226:13:MX_CAN_Init	2
-../Core/Src/main.c:263:13:MX_TIM2_Init	6
-../Core/Src/main.c:322:13:MX_GPIO_Init	1
-../Core/Src/main.c:365:6:Error_Handler	1
+../Core/Src/main.c:104:5:main	2
+../Core/Src/main.c:195:6:SystemClock_Config	3
+../Core/Src/main.c:235:13:MX_CAN_Init	2
+../Core/Src/main.c:272:13:MX_TIM2_Init	6
+../Core/Src/main.c:331:13:MX_GPIO_Init	1
+../Core/Src/main.c:380:6:Error_Handler	1
