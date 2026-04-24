@@ -40,6 +40,9 @@
 // TODO: maybe do a nicer macro later if needed? prolly won't need it tho
 #define CCRMIN 2000
 #define CCRMAX 10000
+
+#define DRS_ON_ANGLE 0
+#define DRS_OFF_ANGLE 90
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -93,6 +96,14 @@ void servoRotation() {
 		setServoAngle(i);
 		HAL_Delay(100);
 	}
+}
+
+void activateDRS() {
+	setServoAngle(DRS_ON_ANGLE);
+}
+
+void deactivateDRS() {
+	setServoAngle(DRS_OFF_ANGLE);
 }
 
 /* USER CODE END 0 */
@@ -152,9 +163,9 @@ int main(void)
 //	  servoRotation();
 
 	  if (!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8)) {
-		  setServoAngle(0);
+		  activateDRS();
 	  } else {
-		  setServoAngle(90);
+		  deactivateDRS();
 	  }
 
 //
