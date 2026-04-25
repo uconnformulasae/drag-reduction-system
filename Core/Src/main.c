@@ -152,9 +152,9 @@ int main(void)
 //	  servoRotation();
 
 	  if (!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8)) {
-		  setServoAngle(0);
+		  setServoAngle(30);
 	  } else {
-		  setServoAngle(90);
+		  setServoAngle(43);
 	  }
 
 //

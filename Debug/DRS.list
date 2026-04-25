@@ -1215,13 +1215,13 @@ int main(void)
  8000ed6:	4603      	mov	r3, r0
  8000ed8:	2b00      	cmp	r3, #0
  8000eda:	d103      	bne.n	8000ee4 <main+0x38>
-		  setServoAngle(0);
- 8000edc:	2000      	movs	r0, #0
+		  setServoAngle(30);
+ 8000edc:	201e      	movs	r0, #30
  8000ede:	f7ff ffd5 	bl	8000e8c <setServoAngle>
  8000ee2:	e7f3      	b.n	8000ecc <main+0x20>
 	  } else {
-		  setServoAngle(90);
- 8000ee4:	205a      	movs	r0, #90	@ 0x5a
+		  setServoAngle(43);
+ 8000ee4:	202b      	movs	r0, #43	@ 0x2b
  8000ee6:	f7ff ffd1 	bl	8000e8c <setServoAngle>
 	  if (!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8)) {
  8000eea:	e7ef      	b.n	8000ecc <main+0x20>
